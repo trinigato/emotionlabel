@@ -53,11 +53,7 @@
             [emotionScanner scanString:@"[" intoString:nil];
             replaced = @"";
             [emotionScanner scanUpToString:@"]" intoString:&replaced];
-            //TODOif replace contains '[' then reset scanner location to this newer '[' and scan again.
-//            UIImage *img = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png", replaced]];
-//            if (img) {
-//                NSString *base64Image = [UIImagePNGRepresentation(img) base64String];
-//                [formatedResponse appendFormat:@"<img src='data:image/png;base64,%@' />", base64Image];
+
             NSString *em = [emotions valueForKey:replaced];
             if (em) {
                 [formatedResponse appendFormat:@"<img src='%@' />", em];
