@@ -7,12 +7,14 @@
 //
 
 #import "EmotionLabel.h"
+#import "ybase64additions.h"
 
 @implementation EmotionLabel
 
 @synthesize orignText = _orignText;
 @synthesize text = _text;
 @synthesize font = _font;
+@synthesize emotionDelegate = _emotionDelegate;
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -22,21 +24,7 @@
     return self;
 }
 
-- (NSDictionary *)getEmotions {
-    static NSDictionary *ems;
-    if (!ems) {
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"emotions" ofType:@"plist"];
-        ems = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-    }
-    
-    return ems;
-    
-}
-
 - (void)setText:(NSString *)text {
-    
-    emotions = [self getEmotions];
-    //NSLog(@"emotions: %@", emotions);
     
     _orignText = text;
     NSString *replaced;
@@ -53,8 +41,7 @@
             [emotionScanner scanString:@"[" intoString:nil];
             replaced = @"";
             [emotionScanner scanUpToString:@"]" intoString:&replaced];
-
-            NSString *em = [emotions valueForKey:replaced];
+            NSString *em = [_emotionDelegate getEmotionImageNameByString:replaced];
             if (em) {
                 [formatedResponse appendFormat:@"<img src='%@' />", em];
             }else {
@@ -68,8 +55,8 @@
     
     //NSLog(@"formatedResponse: %@", formatedResponse);
     [formatedResponse replaceOccurrencesOfString:@"\n" withString:@"<br />" options:0 range:NSMakeRange(0, formatedResponse.length)];
-    NSData *data = [[NSString stringWithFormat:@"<p style='font-size:%fpt'>%@</p>", _font.pointSize, formatedResponse] dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGSize:CGSizeMake(_font.lineHeight, _font.lineHeight)], DTMaxImageSize, @"System", DTDefaultFontFamily, nil];
+    NSData *data = [[NSString stringWithFormat:@"<p style='font-size:%fpt'>%@</p>", _font.pointSize-0.5, formatedResponse] dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGSize:CGSizeMake(_font.lineHeight, _font.lineHeight)], DTMaxImageSize, @"Helvetica", DTDefaultFontFamily, nil];
     NSAttributedString *string = [[NSAttributedString alloc] initWithHTML:data options:options documentAttributes:NULL];
     self.attributedString = string;
 
