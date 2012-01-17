@@ -7,7 +7,6 @@
 //
 
 #import "EmotionLabel.h"
-#import "ybase64additions.h"
 
 @implementation EmotionLabel
 

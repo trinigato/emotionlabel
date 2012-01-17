@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EmotionLabel.h"
 
-@interface ViewController : UIViewController {
+@interface ViewController : UIViewController<EmotionLabelDelegate> {
     IBOutlet EmotionLabel *emotionLabel;
     IBOutlet UITextField *textField;
 }
